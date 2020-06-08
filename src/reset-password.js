@@ -15,14 +15,14 @@ module.exports = {
   resetPwdWithShortToken
 };
 
-async function resetPwdWithLongToken (options, resetToken, password, field) {
+async function resetPwdWithLongToken(options, resetToken, password, field) {
   ensureValuesAreStrings(resetToken, password);
 
   const result = await resetPassword(options, { resetToken }, { resetToken }, password, field);
   return result;
 }
 
-async function resetPwdWithShortToken (options, resetShortToken, identifyUser, password, field) {
+async function resetPwdWithShortToken(options, resetShortToken, identifyUser, password, field) {
   ensureValuesAreStrings(resetShortToken, password);
   ensureObjPropsValid(identifyUser, options.identifyUserProps);
 
@@ -30,7 +30,7 @@ async function resetPwdWithShortToken (options, resetShortToken, identifyUser, p
   return result;
 }
 
-async function resetPassword (options, query, tokens, password, field) {
+async function resetPassword(options, query, tokens, password, field) {
   debug('resetPassword', query, tokens, password);
   const usersService = options.app.service(options.service);
   const usersServiceIdName = usersService.id;
@@ -51,7 +51,7 @@ async function resetPassword (options, query, tokens, password, field) {
   const checkProps = options.skipIsVerifiedCheck ? ['resetNotExpired'] : ['resetNotExpired', 'isVerified'];
   const user1 = getUserData(users, checkProps);
 
-  Object.keys(tokens).forEach(key => {
+  Object.keys(tokens).forEach((key) => {
     promises.push(
       comparePasswords(
         tokens[key],
