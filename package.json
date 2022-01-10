@@ -51,6 +51,7 @@
     "@feathersjs/authentication": "^4.3.0",
     "@feathersjs/authentication-local": "^4.3.0",
     "@feathersjs/errors": "^4.3.0",
+    "@feathersjs/socketio": "^4.5.12",
     "bcryptjs": "^2.3.0",
     "debug": "^4.1.0",
     "feathers-hooks-common": "^5.0.3"

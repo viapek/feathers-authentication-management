@@ -1,6 +1,7 @@
 
 const assert = require('chai').assert;
 const feathers = require('@feathersjs/feathers');
+const socketio = require("@feathersjs/socketio")
 const authManagement = require('../src/index');
 const helpers = require('../src/helpers');
 
@@ -73,6 +74,7 @@ describe('scaffolding.js', () => {
 
     beforeEach(() => {
       app = feathers();
+      app.configure(socketio());
       app.configure(authManagement(userMgntOptions));
       app.configure(services);
       app.setup();
@@ -101,6 +103,32 @@ describe('scaffolding.js', () => {
       delete expected.notifier;
 
       assert.deepEqual(options, expected);
+    });
+
+    it("does not call publish on authManagement", async () => {
+      const usersService = app.service('/users');
+
+      const authManagementService = app.service("authManagement")
+
+      assert.ok(authManagementService, "registered the service");
+
+      let calledUserEvent = false;
+      let calledAuthMgmtEvent = false;
+
+      app.publish((data, context) => {
+        if (context.path === "users") {
+          calledUserEvent = true;
+        }
+        if (context.path === "authManagement") {
+          calledAuthMgmtEvent = true;
+          throw "it should not get here";
+        }
+      });
+
+      await usersService.create({ username: 'John Doe' });
+      await new Promise(resolve => setTimeout(resolve, 200));
+      assert.strictEqual(calledUserEvent, true, "published user data");
+      assert.strictEqual(calledAuthMgmtEvent, false, "not published authManagement data");
     });
   });
 
